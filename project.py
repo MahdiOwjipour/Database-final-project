@@ -122,7 +122,6 @@ def read_csv_and_insert_articles(db, file_path):
             )
             db.insert_article(article)
 
-# Example usage:
 if __name__ == "__main__":
     db = DB(user="your_user", password="your_password", host="your_host", database="your_database")
     db.create_tables()
