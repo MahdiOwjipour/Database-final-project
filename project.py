@@ -127,6 +127,20 @@ class DB:
         query = "DELETE FROM Articles WHERE article_id = %s"
         self.execute_query(query, (article_id,))
         logging.info(f'Article deleted: {article_id}')
+        
+    def fetch_images(self):
+        query = "SELECT * FROM Images"
+        result = self.execute_query(query, fetch=True)
+        for row in result:
+            print(row)
+        return result
+
+    def fetch_articles(self):
+        query = "SELECT * FROM Articles"
+        result = self.execute_query(query, fetch=True)
+        for row in result:
+            print(row)
+        return result
 
 def read_csv_and_insert_images(db, file_path):
     with open(file_path, newline='', encoding='utf-8') as csvfile:
