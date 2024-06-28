@@ -108,19 +108,66 @@ class DB:
         )
         self.execute_query(query, data)
 
-    def update_image(self, image_id, **kwargs):
-        query = "UPDATE Images SET "
-        query += ", ".join(f"{key} = %s" for key in kwargs.keys())
-        query += " WHERE image_id = %s"
-        data = list(kwargs.values()) + [image_id]
+    def update_image(self, image_id, image_path=None, title=None, tags=None, description=None, category=None, photographer_code=None, photographer_name=None, photographer_email=None):
+        updates = []
+        data = []
+        if image_path:
+            updates.append("image_path = %s")
+            data.append(image_path)
+        if title:
+            updates.append("title = %s")
+            data.append(title)
+        if tags:
+            updates.append("tags = %s")
+            data.append(tags)
+        if description:
+            updates.append("description = %s")
+            data.append(description)
+        if category:
+            updates.append("category = %s")
+            data.append(category)
+        if photographer_code:
+            updates.append("photographer_code = %s")
+            data.append(photographer_code)
+        if photographer_name:
+            updates.append("photographer_name = %s")
+            data.append(photographer_name)
+        if photographer_email:
+            updates.append("photographer_email = %s")
+            data.append(photographer_email)
+        
+        query = "UPDATE Images SET " + ", ".join(updates) + " WHERE image_id = %s"
+        data.append(image_id)
         self.execute_query(query, data)
         print(f"Image with ID {image_id} updated")
 
-    def update_article(self, article_id, **kwargs):
-        query = "UPDATE Articles SET "
-        query += ", ".join(f"{key} = %s" for key in kwargs.keys())
-        query += " WHERE article_id = %s"
-        data = list(kwargs.values()) + [article_id]
+    def update_article(self, article_id, content=None, keywords=None, title=None, category=None, writer_code=None, writer_name=None, writer_email=None):
+        updates = []
+        data = []
+        if content:
+            updates.append("content = %s")
+            data.append(content)
+        if keywords:
+            updates.append("keywords = %s")
+            data.append(keywords)
+        if title:
+            updates.append("title = %s")
+            data.append(title)
+        if category:
+            updates.append("category = %s")
+            data.append(category)
+        if writer_code:
+            updates.append("writer_code = %s")
+            data.append(writer_code)
+        if writer_name:
+            updates.append("writer_name = %s")
+            data.append(writer_name)
+        if writer_email:
+            updates.append("writer_email = %s")
+            data.append(writer_email)
+        
+        query = "UPDATE Articles SET " + ", ".join(updates) + " WHERE article_id = %s"
+        data.append(article_id)
         self.execute_query(query, data)
         print(f"Article with ID {article_id} updated")
 
