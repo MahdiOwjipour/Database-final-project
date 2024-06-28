@@ -30,35 +30,35 @@ class DB:
         self.database = database
         self.connect = None
 
-    def connection(self):
+    def connect_db(self):
         self.connect = mysql.connector.connect(
             user=self.user,
             password=self.password,
             host=self.host,
-            database=self.database,
+            database=self.database
         )
 
     def execute_query(self, query, data=None, fetch=False):
-        self.connection()
+        self.connect_db()
         try:
-            mycursor = self.connect.cursor()
+            cursor = self.connect.cursor()
             if data:
-                mycursor.execute(query, data)
+                cursor.execute(query, data)
             else:
-                mycursor.execute(query)
+                cursor.execute(query)
             if fetch:
-                result = mycursor.fetchall()
+                result = cursor.fetchall()
                 return result
             self.connect.commit()
-            print("DONE!")
+            print("Query executed successfully")
         except Exception as e:
-            print(e)
+            print(f"Error executing query: {e}")
         finally:
-            mycursor.close()
+            cursor.close()
             self.connect.close()
 
     def create_tables(self):
-        image_table_query = """
+        create_image_table = """
         CREATE TABLE IF NOT EXISTS Images (
             image_id INT AUTO_INCREMENT PRIMARY KEY,
             image_path VARCHAR(255),
@@ -71,7 +71,7 @@ class DB:
             photographer_email VARCHAR(255)
         );
         """
-        article_table_query = """
+        create_article_table = """
         CREATE TABLE IF NOT EXISTS Articles (
             article_id INT AUTO_INCREMENT PRIMARY KEY,
             content TEXT,
@@ -83,15 +83,18 @@ class DB:
             writer_email VARCHAR(255)
         );
         """
-        self.execute_query(image_table_query)
-        self.execute_query(article_table_query)
+        self.execute_query(create_image_table)
+        self.execute_query(create_article_table)
 
     def insert_image(self, image):
         query = """
         INSERT INTO Images (image_path, title, tags, description, category, photographer_code, photographer_name, photographer_email)
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s);
         """
-        data = (image.image_path, image.title, image.tags, image.description, image.category, image.photographer_code, image.photographer_name, image.photographer_email)
+        data = (
+            image.image_path, image.title, image.tags, image.description,
+            image.category, image.photographer_code, image.photographer_name, image.photographer_email
+        )
         self.execute_query(query, data)
 
     def insert_article(self, article):
@@ -99,7 +102,10 @@ class DB:
         INSERT INTO Articles (content, keywords, title, category, writer_code, writer_name, writer_email)
         VALUES (%s, %s, %s, %s, %s, %s, %s);
         """
-        data = (article.content, article.keywords, article.title, article.category, article.writer_code, article.writer_name, article.writer_email)
+        data = (
+            article.content, article.keywords, article.title, article.category,
+            article.writer_code, article.writer_name, article.writer_email
+        )
         self.execute_query(query, data)
 
     def update_image(self, image_id, **kwargs):
@@ -108,7 +114,7 @@ class DB:
         query += " WHERE image_id = %s"
         data = list(kwargs.values()) + [image_id]
         self.execute_query(query, data)
-        logging.info(f'Image updated: {image_id}')
+        print(f"Image with ID {image_id} updated")
 
     def update_article(self, article_id, **kwargs):
         query = "UPDATE Articles SET "
@@ -116,17 +122,17 @@ class DB:
         query += " WHERE article_id = %s"
         data = list(kwargs.values()) + [article_id]
         self.execute_query(query, data)
-        logging.info(f'Article updated: {article_id}')
+        print(f"Article with ID {article_id} updated")
 
     def delete_image(self, image_id):
         query = "DELETE FROM Images WHERE image_id = %s"
         self.execute_query(query, (image_id,))
-        logging.info(f'Image deleted: {image_id}')
+        print(f"Image with ID {image_id} deleted")
 
     def delete_article(self, article_id):
         query = "DELETE FROM Articles WHERE article_id = %s"
         self.execute_query(query, (article_id,))
-        logging.info(f'Article deleted: {article_id}')
+        print(f"Article with ID {article_id} deleted")
         
     def fetch_images(self):
         query = "SELECT * FROM Images"
