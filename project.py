@@ -102,6 +102,14 @@ class DB:
         data = (article.content, article.keywords, article.title, article.category, article.writer_code, article.writer_name, article.writer_email)
         self.execute_query(query, data)
 
+    def update_image(self, image_id, **kwargs):
+        query = "UPDATE Images SET "
+        query += ", ".join(f"{key} = %s" for key in kwargs.keys())
+        query += " WHERE image_id = %s"
+        data = list(kwargs.values()) + [image_id]
+        self.execute_query(query, data)
+        logging.info(f'Image updated: {image_id}'
+
 def read_csv_and_insert_images(db, file_path):
     with open(file_path, newline='', encoding='utf-8') as csvfile:
         reader = csv.DictReader(csvfile)
