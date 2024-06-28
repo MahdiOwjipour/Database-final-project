@@ -118,6 +118,16 @@ class DB:
         self.execute_query(query, data)
         logging.info(f'Article updated: {article_id}')
 
+    def delete_image(self, image_id):
+        query = "DELETE FROM Images WHERE image_id = %s"
+        self.execute_query(query, (image_id,))
+        logging.info(f'Image deleted: {image_id}')
+
+    def delete_article(self, article_id):
+        query = "DELETE FROM Articles WHERE article_id = %s"
+        self.execute_query(query, (article_id,))
+        logging.info(f'Article deleted: {article_id}')
+
 def read_csv_and_insert_images(db, file_path):
     with open(file_path, newline='', encoding='utf-8') as csvfile:
         reader = csv.DictReader(csvfile)
