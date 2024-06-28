@@ -108,7 +108,15 @@ class DB:
         query += " WHERE image_id = %s"
         data = list(kwargs.values()) + [image_id]
         self.execute_query(query, data)
-        logging.info(f'Image updated: {image_id}'
+        logging.info(f'Image updated: {image_id}')
+
+    def update_article(self, article_id, **kwargs):
+        query = "UPDATE Articles SET "
+        query += ", ".join(f"{key} = %s" for key in kwargs.keys())
+        query += " WHERE article_id = %s"
+        data = list(kwargs.values()) + [article_id]
+        self.execute_query(query, data)
+        logging.info(f'Article updated: {article_id}')
 
 def read_csv_and_insert_images(db, file_path):
     with open(file_path, newline='', encoding='utf-8') as csvfile:
